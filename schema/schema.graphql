@@ -1,0 +1,60 @@
+type Category {
+  title: String!
+  order: Int
+  titleBackgroundColor: String
+  titleColor: String
+  backgroundColor: String
+  project: Project @relation(name:"CATEGORY_OF", direction: "OUT")
+  items: [Item] @relation(name: "MEMBER_OF",direction: "IN")
+}
+
+type User {
+  username: String!
+  displayname: String!
+  email: String!
+  projects: [Project] @relation(name: "MEMBER_OF", direction: "OUT")
+  assignedItems: [Item] @relation(name: "ASSIGNED_TO", direction: "OUT")
+}
+
+
+type Item {
+  summary: String!
+  description: String
+  assignedUser: User @relation(name:"ASSIGNED_TO", direction: "IN")
+  category: Category @relation(name:"MEMBER_OF", direction: "OUT")
+  order: Int
+}
+type Project {
+  name: String!
+  description: String
+  categories: [Category] @relation(name:"CATEGORY_OF", direction:"IN")
+  users: [User] @relation(name: "MEMBER_OF", direction: "IN")
+}
+
+type Query {
+  UserByName(username: String!): User @cypher(statement: "MATCH (user:User ) WHERE username = $username RETURN user")
+}
+
+input ReorderItemsInput {
+  id: ID!
+  order: Int!
+}
+input UpdateCategoryInput {
+  title: String
+  order: Int
+  titleBackgroundColor: String
+  titleColor: String
+  backgroundColor: String
+}
+
+
+
+type Mutation {
+  UpdateCategory(id: ID!, input: UpdateCategoryInput) : Category
+    @cypher(statement:"MATCH (category:Category) WHERE id(category) = toInteger($id) SET category += $input RETURN category")
+
+  ReorderItems(input: [ReorderItemsInput]) : [Item]
+    @cypher(statement: "UNWIND $input AS row MATCH (i:Item) WHERE id(i) = toInteger(row.id) SET i.order = row.order RETURN i")
+}
+
+
