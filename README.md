@@ -46,6 +46,18 @@ $ git clone https://github.com/dskyberg/apollo-koa-graphql.git
 $ cd apollo-koa-graphql
 $ npm i
 ````
+### Create a .env file
+Open a file in the root apollo-koa-graphql folder called `.env` and add the following.
+Then change what you want.
+````code
+APOLLO_PORT=9000
+NEO4J_URI="bolt://localhost:7687"
+NEO4J_PWD="letmein"
+APOLLO_PORT = 9000,
+NEO4J_USER = 'neo4j',
+NEO4J_PWD = 'neo4j',
+````
+
 ### Setup the mount points
 ````bash
 $ npm run neo4j:cleanup
@@ -56,6 +68,13 @@ terminal window/tab.  If you don't want the output, just add -d to the following
 command.
 ````bash
 $ docker-compose up
+````
+### Load the initial database configuration
+This step creates a bunch of test data in the database to play with that matches
+the schema.
+
+````bash
+$ npm run init-db
 ````
 
 ### Run the Apollo Server
