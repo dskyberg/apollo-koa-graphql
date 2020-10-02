@@ -5,6 +5,7 @@ for experimenting with GraphQL. There are two key components:
 * Neo4J:  Community edition of Neo4J, running in Docker.  the only setup needed
 is to create the local folders for data and logs.  The rest is managed in
 [docker-compose.yml](docker-compose.yml).
+
 * Apollo Server: Running in Koa.  Only because I wanted to play with setting it
 up.  But you can easily punt this and run ApolloServer natively (uses Express)
 or set up your own Express server.  Everything associated with getting Koa set
@@ -89,9 +90,9 @@ You now have a running GraphQL server!
 
 # Suggestions
 
-## Neo4J Desktop
-Install Neo4J Desktop.  You can connect to your database and run Cypher queries
-from there.
+## Browse with Neo4J Browser
+Browse to http://localhost:7474/browser.  You can run Cypher queries
+directly from there.
 
 ## Browse with GraphiQl
 Apollo Server ships with the graphiql browser.  You can browse in your web browser
