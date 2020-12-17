@@ -9,7 +9,12 @@
         "init-db": "babel-node schema/initialize.js",
         "neo4j:cleanup": "./neo4j.cleanup.sh"
     },
-    "keywords": ["apollo", "apollo server", "koa", "graphql"],
+    "keywords": [
+        "apollo",
+        "apollo server",
+        "koa",
+        "graphql"
+    ],
     "author": {
         "email": "davidskyberg@gmail.com",
         "name": "David Sky berg"
@@ -37,7 +42,8 @@
         "koa-json": "^2.0.2",
         "koa-router": "^9.1.0",
         "neo4j-driver": "^4.0.2",
-        "neo4j-graphql-js": "^2.15.0",
+        "neo4j-graphql-js": "latest",
+        "node-fetch": "^2.6.1",
         "winston": "^3.3.3"
     }
 }

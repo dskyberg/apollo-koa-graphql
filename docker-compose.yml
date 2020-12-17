@@ -13,9 +13,5 @@ services:
             - "7474:7474"
             - "7687:7687"
         volumes:
-            - type: bind
-              source: ./neo4j/data
-              target: /data
-            - type: bind
-              source: ./neo4j/logs
-              target: /logs
+            - ./neo4j/data:/data
+            - ./neo4j/logs:/logs

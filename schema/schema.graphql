@@ -24,12 +24,14 @@ type Item {
   category: Category @relation(name:"MEMBER_OF", direction: "OUT")
   order: Int
 }
+
 type Project {
   name: String!
   description: String
   categories: [Category] @relation(name:"CATEGORY_OF", direction:"IN")
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
 }
+
 
 type Query {
   UserByName(username: String!): User @cypher(statement: "MATCH (user:User ) WHERE username = $username RETURN user")
@@ -46,15 +48,39 @@ input UpdateCategoryInput {
   titleColor: String
   backgroundColor: String
 }
-
-
+input UpdateItemInput {
+  summary: String
+  description: String
+  order: Int
+}
+# Generating a GraphQL style response with nested items:
+# MATCH (category: Category {title: "Queue"})
+# RETURN category {
+#  __typename:"Category",
+#  _id:id(category),
+#  .*,
+#  items: [
+#    (category)<-[:MEMBER_OF]-(item:Item)
+#      | item {
+#          __typename:"Item",
+#          _id:ID(item),
+#          .*
+#        }
+#  ]
+# } as Category
 
 type Mutation {
-  UpdateCategory(id: ID!, input: UpdateCategoryInput) : Category
-    @cypher(statement:"MATCH (category:Category) WHERE id(category) = toInteger($id) SET category += $input RETURN category")
-
+  UpdateItem(id: ID!, input: UpdateItemInput) : Item
+    @cypher(statement:"MATCH (item:Item) WHERE id(item) = toInteger($id) SET item += $input RETURN item")
+  # Create a new item and add it to a category
+  CreateItem(categoryId: ID!, input: UpdateItemInput) : Item
+    @cypher(statement: "MATCH (c:Category)<-[:MEMBER_OF]-(i:Item) WHERE id(c)=toInteger(categoryId) WITH c, MAX(i.order)+1 as order CREATE (c)<-[:MEMBER_OF]-(item:Item $input) SET item.order=order RETURN item")
+  DeleteItem(id: ID!): Item
+    @cypher(statement: "MATCH (item:Item) WHERE ID(item)=toInteger($id) DETACH DELETE item RETURN item ")
   ReorderItems(input: [ReorderItemsInput]) : [Item]
     @cypher(statement: "UNWIND $input AS row MATCH (i:Item) WHERE id(i) = toInteger(row.id) SET i.order = row.order RETURN i")
+  UpdateCategory(id: ID!, input: UpdateCategoryInput) : Category
+    @cypher(statement:"MATCH (category:Category) WHERE id(category) = toInteger($id) SET category += $input RETURN category")
 }
 
 

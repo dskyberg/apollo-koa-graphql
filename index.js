@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import fetch from 'node-fetch';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser'
 import helmet from 'koa-helmet';
@@ -38,18 +39,43 @@ const driver = neo4j.driver(
 
 // Set up a logger. This is very verbos, even in "info" mode.
 const options = {
-  level: "info"
+  level: "debug",
+  timestamp: true,
+  mutate: (level, data) => {
+    if(data === undefined || data === null) {
+      return data
+    }
+    if(data.action !== "response") {
+      return data
+    }
+    console.log(JSON.stringify(data.data, null, 3))
+    console.log(data)
+    //console.log(data.queryType)
+    return data
+  }
  };
 
 const extensions = [() => new ApolloLogExtension(options)];
 
 // Apollo server
 const server = new ApolloServer({
-  context: ({ ctx }) => {
+  context: async ({ ctx }) => {
     // get the user token from the headers
     const token = ctx.headers.authorization || '';
-    const user = { id: 12345, username: token, roles: ['user', 'admin'] }
+    console.log('Access Token:', token);
+    let user = {};
+    try {
+      const response = await fetch('http://localhost:3082/me', {
+        headers: {"authorization": `Bearer ${token}`}
+      })
+      user = await response.json();
+      console.log('User:', user);
+      //return { user};
+      //const user = { id: 12345, username: token, roles: ['user', 'admin'] }
 
+    } catch(error) {
+      console.log(error);
+    }
     return {
       user,
       driver,

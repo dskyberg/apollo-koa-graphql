@@ -83,11 +83,34 @@ The server builds and runs with bable-node.  So, you'll see logging output, and
 file changes will cause the server to restart.  The server runs on port 9000 by
 default. But you can change that in [.env](.env)
 
+Download this repository
+````bash
+$ git clone https://github.com/dskyberg/apollo-koa-graphql.git
+````
+
+Install the node components
+````bash
+$ cd apollo-koa-graphql
+$ npm install
+````
+
+Run Neo4J in a Docker container and initialize with the demo data.
+````bash
+$ docker-compose up -d
+$ npm run init-db
+````
+
+Run this server
 ````bash
 $ npm start
 ````
+The server should be running
 You now have a running GraphQL server!
 
+Note, to modify the default data, edit [initialize.js](./schema/iitialize.js) and re-run
+````bash
+$ npm run init-db
+````
 # Suggestions
 
 ## Browse with Neo4J Browser
