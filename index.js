@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser'
@@ -9,16 +9,33 @@ import {ApolloLogExtension} from 'apollo-log'
 
 import schema from './schema/graphql_schema'
 
-// Load env variables early
-dotenv.config()
-const {
-  APOLLO_PORT = 9000,
-  NEO4J_USER = 'neo4j',
-  NEO4J_PWD = 'neo4j',
-  NEO4J_URI = 'bolt://localhost:7687',
-  NEO4J_ENCRYPTED=false,
-  NEO4J_DATABASE='neo4j'
-} = process.env;
+
+
+/**
+ *
+ * @param {string} val Value is expected from process.env, but can be any string
+ * @returns true if val === [TRUE | true | 1], else false
+ */
+const booleanEnv = (val) => val !== undefined && (val === '1' || val.toUpperCase() === 'TRUE') ? true : false
+
+/**
+ * The .env file is processed by 'nodemon -r dotenv/config so that code is more
+ * deployment friendly.  If you want to change to using dotenv.config
+ * directly, remove the -r option from the start script in package.json.
+ * Note: the .env file is watched. If you want to change the file name, or stop
+ * watching, update nodemon.json accordingly.
+ */
+const APOLLO_PORT = process.env.APOLLO_PORT
+const NEO4J_USER = process.env.NEO4J_USER
+const NEO4J_PWD = process.env.NEO4J_PWD
+const NEO4J_URI = process.env.NEO4J_URI
+const NEO4J_ENCRYPTED = booleanEnv(process.env.NEO4J_ENCRYPTED)
+
+console.log('APOLLO_PORT',APOLLO_PORT)
+console.log('NEO4J_USER', NEO4J_USER)
+console.log('NEO4J_PWD',NEO4J_PWD)
+console.log('NEO4J_URI',NEO4J_URI)
+console.log('NEO4J_ENCRYPTED',NEO4J_ENCRYPTED)
 
 /**
  * Standard Koa server setup
@@ -33,7 +50,7 @@ const driver = neo4j.driver(
   NEO4J_URI,
   neo4j.auth.basic(NEO4J_USER, NEO4J_PWD),
   {
-    encrypted: process.env.NEO4J_ENCRYPTED ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF',
+    encrypted: NEO4J_ENCRYPTED ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF',
   }
 )
 

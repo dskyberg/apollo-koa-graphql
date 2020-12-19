@@ -4,7 +4,7 @@
     "description": "Simple Apollo Server set up on Koa",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon --exec babel-node index.js ",
+        "start": "nodemon -r dotenv/config --exec babel-node index.js ",
         "test": "mocha --require @babel/register",
         "init-db": "babel-node schema/initialize.js",
         "neo4j:cleanup": "./neo4j.cleanup.sh"

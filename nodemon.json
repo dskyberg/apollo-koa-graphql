@@ -1,0 +1,5 @@
+{
+    "ignore": ["test/*", "logs/*", "neo4j/*"],
+    "watch": [".env", "index.js", "schema/*.*"],
+    "ext": "js,json,html,txt,graphql"
+}
